@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
 
         // Request a string response from the provided URL.
-        final String url = "http://192.168.1.44:8080/Agenda3.0/Agenda3";
+        final String url = "http://192.168.1.42:8080/Agenda3.0/Agenda3";
 
 
 
