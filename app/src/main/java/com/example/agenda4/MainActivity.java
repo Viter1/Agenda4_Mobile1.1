@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                         wb_listado.setWebViewClient(new WebViewClient());
                         wb_listado.getSettings().setJavaScriptEnabled(true);
                         wb_listado.loadData(respuesta,"text/html", null);
-
                         if (respuesta.equals("OK")){
                             toastInsertado = Toast.makeText(getApplicationContext(),
                                     "TODO BIEN MAQUINA", Toast.LENGTH_SHORT);
@@ -84,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
                             toastInsertado = Toast.makeText(getApplicationContext(),
                                     "TODO MAL MAQUINA", Toast.LENGTH_SHORT);
                         }
-
-
                         toastInsertado.show();
                     }
                 },
