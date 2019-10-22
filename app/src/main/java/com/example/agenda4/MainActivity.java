@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     EditText et_nombre,et_apellido,et_email;
     Button   btn_boton;
     RequestQueue queue;
+    WebView wb_listado;
 
 
     @Override
@@ -39,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
         et_apellido = findViewById(R.id.et_apellido);
         et_email = findViewById(R.id.et_email);
         btn_boton = findViewById(R.id.btn_boton);
+        wb_listado = findViewById(R.id.wb_listado);
         queue = Volley.newRequestQueue(this);
 
         // Request a string response from the provided URL.
-        final String url = "http://192.168.1.42:8080/Agenda3.0/Agenda3";
+        final String url = "http://10.34.80.164:8080/Agenda3.0/Agenda3";
 
 
 
@@ -65,9 +68,17 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
-                        Toast toastInsertado =
-                                Toast.makeText(getApplicationContext(),
-                                        "Insertado", Toast.LENGTH_SHORT);
+                        Toast toastInsertado;
+                        String respuesta = response.trim();
+                        if (respuesta.equals("OK")){
+                            toastInsertado = Toast.makeText(getApplicationContext(),
+                                    "TODO BIEN MAQUINA", Toast.LENGTH_SHORT);
+                            wb_listado.loadData(xml);
+                        }else {
+                            toastInsertado = Toast.makeText(getApplicationContext(),
+                                    "TODO MAL MAQUINA", Toast.LENGTH_SHORT);
+                        }
+
 
                         toastInsertado.show();
                     }
