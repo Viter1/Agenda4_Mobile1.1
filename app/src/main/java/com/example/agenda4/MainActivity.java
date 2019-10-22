@@ -26,7 +26,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     TextView tv_nombre,tv_apellido,tv_email;
     EditText et_nombre,et_apellido,et_email;
-    Button   btn_boton;
+    Button   btn_boton , btn_listar;
     RequestQueue queue;
     WebView wb_listado;
 
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         et_apellido = findViewById(R.id.et_apellido);
         et_email = findViewById(R.id.et_email);
         btn_boton = findViewById(R.id.btn_boton);
+        btn_listar = findViewById(R.id.btn_listar);
         wb_listado = findViewById(R.id.wb_listado);
         queue = Volley.newRequestQueue(this);
 
@@ -58,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_listar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                et_nombre.setText("");
+                et_apellido.setText("");
+                et_email.setText("");
+                listar(url);
+            }
+        });
+
 
     }
 
@@ -71,11 +82,9 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Response", response);
 
                         Toast toastInsertado;
-                        String respuesta = response.trim().replace("null","");
-                        wb_listado.setWebViewClient(new WebViewClient());
-                        wb_listado.getSettings().setJavaScriptEnabled(true);
-                        wb_listado.loadData(respuesta,"text/html", null);
-                        if (respuesta.equals("OK")){
+                        String respuesta = response.trim();
+
+                        if (respuesta!=null){
                             toastInsertado = Toast.makeText(getApplicationContext(),
                                     "TODO BIEN MAQUINA", Toast.LENGTH_SHORT);
 
@@ -84,6 +93,50 @@ public class MainActivity extends AppCompatActivity {
                                     "TODO MAL MAQUINA", Toast.LENGTH_SHORT);
                         }
                         toastInsertado.show();
+                        et_nombre.setText("");
+                        et_apellido.setText("");
+                        et_email.setText("");
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response","Error");
+                        Toast toastError = Toast.makeText(getApplicationContext(),"No ha sido Insertado",Toast.LENGTH_SHORT);
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("nombre",et_nombre.getText().toString());
+                params.put("apellido", et_apellido.getText().toString());
+                params.put("email",et_email.getText().toString());
+                return params;
+            }
+        };
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void listar(final String url) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+
+                        Log.d("Response", response);
+                        String respuesta = response.trim().replace("null","");
+                        wb_listado.setWebViewClient(new WebViewClient());
+                        wb_listado.getSettings().setJavaScriptEnabled(true);
+                        wb_listado.loadData(respuesta,"text/html", null);
+
                     }
                 },
                 new Response.ErrorListener()
