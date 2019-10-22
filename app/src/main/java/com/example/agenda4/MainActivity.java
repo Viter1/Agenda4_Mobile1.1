@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         if (respuesta.equals("OK")){
                             toastInsertado = Toast.makeText(getApplicationContext(),
                                     "TODO BIEN MAQUINA", Toast.LENGTH_SHORT);
-                            wb_listado.loadData(xml);
+
                         }else {
                             toastInsertado = Toast.makeText(getApplicationContext(),
                                     "TODO MAL MAQUINA", Toast.LENGTH_SHORT);
