@@ -74,10 +74,7 @@ public class ParsearXML {
             }
 
             }
-        return new Contacto(nombre,apellido,email);
-
-
-
+        return new Contacto();
 
     }
 

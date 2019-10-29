@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     Button   btn_boton , btn_listar;
     RequestQueue queue;
     WebView wb_listado;
-    ParsearXML toXML = new ParsearXML();
+
 
 
 
@@ -59,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
         et_email = findViewById(R.id.et_email);
         btn_boton = findViewById(R.id.btn_boton);
         btn_listar = findViewById(R.id.btn_listar);
-//        wb_listado = findViewById(R.id.wb_listado);
+//       wb_listado = findViewById(R.id.wb_listado);
         queue = Volley.newRequestQueue(this);
 
+
         // Request a string response from the provided URL.
-        final String url = "http://192.168.1.39:8080/Agenda3.0/Agenda3";
+        final String url = "http://10.34.84.240:8080/Agenda3.0/Agenda3";
 
 
 
@@ -86,6 +87,67 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void parseXML(InputStream in ) {
+        XmlPullParserFactory parserFactory;
+        try {
+            parserFactory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = parserFactory.newPullParser();
+            InputStream is = in;
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(is, null);
+            proceso_parseo(parser);
+
+        } catch (XmlPullParserException e) {
+
+        } catch (IOException e) {
+        }
+    }
+
+    private void proceso_parseo(XmlPullParser parser) throws IOException, XmlPullParserException{
+        ArrayList<Contacto> players = new ArrayList<>();
+        int eventType = parser.getEventType();
+        Contacto cuenta_de_contactos = null;
+
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            String eltName = null;
+
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    eltName = parser.getName();
+
+                    if ("contacto".equals(eltName)) {
+                        cuenta_de_contactos = new Contacto();
+                        players.add(cuenta_de_contactos);
+                    } else if (cuenta_de_contactos != null) {
+                        if ("nombre".equals(eltName)) {
+                            cuenta_de_contactos.nombre = parser.nextText();
+                        } else if ("apellido".equals(eltName)) {
+                            cuenta_de_contactos.apellido = parser.nextText();
+                        } else if ("email".equals(eltName)) {
+                            cuenta_de_contactos.email = parser.nextText();
+                        }
+                    }
+                    break;
+            }
+
+            eventType = parser.next();
+        }
+
+        imprimir_contactos(players);
+    }
+
+    private void imprimir_contactos(ArrayList<Contacto> players) {
+        StringBuilder builder = new StringBuilder();
+
+        for (Contacto player : players) {
+            builder.append(player.nombre).append("\n").
+                    append(player.apellido).append("\n").
+                    append(player.email).append("\n\n");
+        }
+
+        tv_test.setText(builder.toString());
     }
 
 
@@ -153,31 +215,35 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
-                        System.out.println(response);
+//                        System.out.println(response);
                         String respuesta = response.trim().replace("null","");
+                        String res = respuesta.trim();
+                        System.out.println(res);
+                        InputStream inputStream = new ByteArrayInputStream(res.getBytes(Charset.forName("UTF-8")));
+
+                        parseXML(inputStream);
 //                        wb_listado.setWebViewClient(new WebViewClient());
 //                        wb_listado.getSettings().setJavaScriptEnabled(true);
 //                        wb_listado.loadData(respuesta,"text/html", null);
 
-                        XmlPullParserFactory parserFactory;
-                        InputStream inputStream = new ByteArrayInputStream(respuesta.getBytes(Charset.forName("UTF-8")));
+//                        XmlPullParserFactory parserFactory;
 
-                        StringBuilder builder = new StringBuilder();
-                        try {
-                            parserFactory = XmlPullParserFactory.newInstance();
-                            XmlPullParser parser = parserFactory.newPullParser();
-
-                           ArrayList<Contacto>misContactos =  (ArrayList<Contacto>)toXML.parsear(inputStream);
-                            for (Contacto con : misContactos){
-                                builder.append(con.getNombre()).append("\n");
-                                builder.append(con.getApellido()).append("\n");
-                                builder.append(con.getEmail()).append("\n");
-                            }
-
-                            tv_test.setText(builder.toString());
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
+//
+//                        StringBuilder builder = new StringBuilder();
+//                        try {
+//
+//
+//                           ArrayList<Contacto>misContactos =  (ArrayList<Contacto>)toXML.parsear(inputStream);
+//                            for (Contacto con : misContactos){
+//                                builder.append(con.getNombre()).append("\n");
+//                                builder.append(con.getApellido()).append("\n");
+//                                builder.append(con.getEmail()).append("\n");
+//                            }
+//
+//                            tv_test.setText(builder.toString());
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
 
                     }
                 },
