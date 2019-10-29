@@ -17,12 +17,12 @@ public class ParsearXML {
     private static final String ETIQUETA_CONTACTO = "contacto";
     private static final String ETIQUETA_NOMBRE = "nombre";
     private static final String ETIQUETA_APELLIDO = "apellido";
-    private static final String ETIQUETA_EMAIL = "eamil";
+    private static final String ETIQUETA_EMAIL = "email";
 
     public List<Contacto> parsear(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
             return leerContactos(parser);
@@ -33,7 +33,7 @@ public class ParsearXML {
 
     private List<Contacto> leerContactos(XmlPullParser parser)
             throws XmlPullParserException, IOException {
-        List<Contacto>  listaHoteles = new ArrayList<Contacto>();
+        List<Contacto>  lista_contactos = new ArrayList<Contacto>();
 
         parser.require(XmlPullParser.START_TAG, ns, ETIQUETA_AGENDA);
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -43,12 +43,12 @@ public class ParsearXML {
             String nombreEtiqueta = parser.getName();
             // Buscar etiqueta <hotel>
             if (nombreEtiqueta.equals(ETIQUETA_CONTACTO)) {
-                listaHoteles.add(leerContacto(parser));
+                lista_contactos.add(leerContacto(parser));
             } else {
                 saltarEtiqueta(parser);
             }
         }
-        return listaHoteles;
+        return lista_contactos;
     }
 
     private Contacto leerContacto(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -66,10 +66,10 @@ public class ParsearXML {
                     nombre = leerNombre(parser);
                     break;
                 case ETIQUETA_APELLIDO:
-                    nombre = leerApellido(parser);
+                    apellido = leerApellido(parser);
                     break;
                 case ETIQUETA_EMAIL:
-                    nombre = leerEmail(parser);
+                    email = leerEmail(parser);
                     break;
             }
 

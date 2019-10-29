@@ -25,19 +25,25 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    TextView tv_nombre,tv_apellido,tv_email;
+    TextView tv_nombre,tv_apellido,tv_email,tv_test;
     EditText et_nombre,et_apellido,et_email;
     Button   btn_boton , btn_listar;
     RequestQueue queue;
     WebView wb_listado;
+    ParsearXML toXML = new ParsearXML();
+
 
 
     @Override
@@ -47,16 +53,17 @@ public class MainActivity extends AppCompatActivity {
         tv_nombre = (TextView) findViewById(R.id.tv_nombre);
         tv_apellido = (TextView)findViewById(R.id.tv_apellido);
         tv_email = (TextView)findViewById(R.id.tv_email);
+        tv_test = (TextView)findViewById(R.id.tv_test);
         et_nombre =  findViewById(R.id.et_nombre);
         et_apellido = findViewById(R.id.et_apellido);
         et_email = findViewById(R.id.et_email);
         btn_boton = findViewById(R.id.btn_boton);
         btn_listar = findViewById(R.id.btn_listar);
-        wb_listado = findViewById(R.id.wb_listado);
+//        wb_listado = findViewById(R.id.wb_listado);
         queue = Volley.newRequestQueue(this);
 
         // Request a string response from the provided URL.
-        final String url = "http://10.34.80.250:8080/Agenda3.0/Agenda3";
+        final String url = "http://192.168.1.39:8080/Agenda3.0/Agenda3";
 
 
 
@@ -80,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
 
@@ -144,18 +153,28 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
+                        System.out.println(response);
                         String respuesta = response.trim().replace("null","");
 //                        wb_listado.setWebViewClient(new WebViewClient());
 //                        wb_listado.getSettings().setJavaScriptEnabled(true);
 //                        wb_listado.loadData(respuesta,"text/html", null);
-                        ParsearXML toXML = new ParsearXML();
+
                         XmlPullParserFactory parserFactory;
                         InputStream inputStream = new ByteArrayInputStream(respuesta.getBytes(Charset.forName("UTF-8")));
+
+                        StringBuilder builder = new StringBuilder();
                         try {
                             parserFactory = XmlPullParserFactory.newInstance();
                             XmlPullParser parser = parserFactory.newPullParser();
 
-                            toXML.parsear(inputStream);
+                           ArrayList<Contacto>misContactos =  (ArrayList<Contacto>)toXML.parsear(inputStream);
+                            for (Contacto con : misContactos){
+                                builder.append(con.getNombre()).append("\n");
+                                builder.append(con.getApellido()).append("\n");
+                                builder.append(con.getEmail()).append("\n");
+                            }
+
+                            tv_test.setText(builder.toString());
                         }catch (Exception e){
                             e.printStackTrace();
                         }
