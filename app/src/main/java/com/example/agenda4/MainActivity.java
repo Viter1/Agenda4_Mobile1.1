@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Xml;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -20,6 +21,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
 
         // Request a string response from the provided URL.
-        final String url = "http://192.168.1.42:8080/Agenda3.0/Agenda3";
+        final String url = "http://10.34.80.250:8080/Agenda3.0/Agenda3";
 
 
 
@@ -71,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
 
     private void enviarDatos(final String url) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -130,12 +143,22 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // response
-
                         Log.d("Response", response);
                         String respuesta = response.trim().replace("null","");
-                        wb_listado.setWebViewClient(new WebViewClient());
-                        wb_listado.getSettings().setJavaScriptEnabled(true);
-                        wb_listado.loadData(respuesta,"text/html", null);
+//                        wb_listado.setWebViewClient(new WebViewClient());
+//                        wb_listado.getSettings().setJavaScriptEnabled(true);
+//                        wb_listado.loadData(respuesta,"text/html", null);
+                        ParsearXML toXML = new ParsearXML();
+                        XmlPullParserFactory parserFactory;
+                        InputStream inputStream = new ByteArrayInputStream(respuesta.getBytes(Charset.forName("UTF-8")));
+                        try {
+                            parserFactory = XmlPullParserFactory.newInstance();
+                            XmlPullParser parser = parserFactory.newPullParser();
+
+                            toXML.parsear(inputStream);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
 
                     }
                 },
@@ -164,4 +187,7 @@ public class MainActivity extends AppCompatActivity {
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
+
 }
+
+
