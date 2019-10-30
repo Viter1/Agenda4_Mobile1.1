@@ -41,7 +41,7 @@ public class ParsearXML {
                 continue;
             }
             String nombreEtiqueta = parser.getName();
-            // Buscar etiqueta <hotel>
+            // Buscar etiqueta <contacto>
             if (nombreEtiqueta.equals(ETIQUETA_CONTACTO)) {
                 lista_contactos.add(leerContacto(parser));
             } else {

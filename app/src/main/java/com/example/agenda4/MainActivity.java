@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Response", response);
                         String respuesta = response.trim().replace("null","");
                         String res = respuesta.trim();
-                        System.out.println(res);
                         InputStream inputStream = new ByteArrayInputStream(res.getBytes(Charset.forName("UTF-8")));
                         XmlPullParserFactory parserFactory;
                         StringBuilder builder = new StringBuilder();
