@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Response", response);
                         Toast toastInsertado;
                         String respuesta = response.trim();
-
                         if (respuesta!=null){
                             toastInsertado = Toast.makeText(getApplicationContext(),
                                     "TODO BIEN MAQUINA", Toast.LENGTH_SHORT);
@@ -191,10 +190,6 @@ public class MainActivity extends AppCompatActivity {
 
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
-    }
-    public ArrayList<Contacto> listado_final(ArrayList<Contacto> contactos){
-        ArrayList<Contacto> listado_final = contactos;
-        return listado_final;
     }
 }
 
