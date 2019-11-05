@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    TextView tv_nombre,tv_apellido,tv_email;
+    TextView tv_nombre,tv_apellido,tv_email,tv_nombre_lv,tv_apellido_lv,tv_email_lv;
     ListView lv_lista;
     EditText et_nombre,et_apellido,et_email;
     Button   btn_boton , btn_listar;
@@ -53,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
         tv_nombre = (TextView) findViewById(R.id.tv_nombre);
         tv_apellido = (TextView)findViewById(R.id.tv_apellido);
         tv_email = (TextView)findViewById(R.id.tv_email);
-       lv_lista = (ListView) findViewById(R.id.lv_lista);
+       tv_nombre_lv = (TextView) findViewById(R.id.tv_nombre_lv);
+       tv_apellido_lv = (TextView) findViewById(R.id.tv_apellido_lv);
+       tv_email_lv = (TextView) findViewById(R.id.tv_email_lv);
+        lv_lista = (ListView) findViewById(R.id.lv_lista);
         et_nombre =  findViewById(R.id.et_nombre);
         et_apellido = findViewById(R.id.et_apellido);
         et_email = findViewById(R.id.et_email);
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         btn_listar = findViewById(R.id.btn_listar);
         queue = Volley.newRequestQueue(this);
         // Request a string response from the provided URL.
-        final String url = "http://192.168.1.39:8080/Agenda3.0/Agenda3";
+        final String url = "http://192.168.1.34:8080/Agenda3.0/Agenda3";
         btn_boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,11 +83,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void imprimir(final ArrayList<Contacto> misContactos){
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,misContactos);
-        lv_lista.setAdapter(arrayAdapter);
+        ListAdapter adaptador=new Adaptador(misContactos, this);
+        lv_lista.setAdapter(adaptador);
         lv_lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
                 Toast.makeText(MainActivity.this,"Clikado en el item "+i+ "\n" +misContactos.get(i).toString(),Toast.LENGTH_SHORT).show();
             }
         });
